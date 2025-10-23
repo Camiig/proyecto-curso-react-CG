@@ -4,11 +4,12 @@ import { BrowserRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import App from './App.jsx'
 
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    {/* 2. ENVOLVEMOS LA APLICACIÓN */}
-    <BrowserRouter> 
+    <BrowserRouter basename="/proyecto-curso-react-CG/"> 
       <App />
     </BrowserRouter>
   </StrictMode>,
 );
+

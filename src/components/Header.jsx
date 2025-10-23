@@ -1,10 +1,12 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import { Navbar, Nav, Container } from 'react-bootstrap';
+import { Navbar, Nav, Container, Button } from 'react-bootstrap'; // <-- AGREGADO 'Button' AQUI
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
-//estilo personalizado para el header con css
+import logoSrc from '../../public/logo-stark-transparente.png';
+
+// estilo personalizado para el header con css
 const headerStyle = {
     backgroundColor: '#8d8d8d',
     color: '#212529', 
@@ -17,7 +19,8 @@ const Header = ({isLoggedIn, handleLogout}) => {
                 {/*lado izquierdo: logo y titulo*/}
                 <Navbar.Brand as= {Link} to="/" className="d-flex align-items-center">
                 <img 
-                    src="/logo-stark-transparente.png"
+                    //uso de la ruta importada del logo
+                    src={logoSrc}
                     alt="The North Shop Logo"
                     className="d-inline-block align-top me-3"
                     style={{width: '45px', height: '45px' }}
