@@ -2,10 +2,9 @@ import React from 'react';
 import { Form, Button, Container, Row, Col, Card } from 'react-bootstrap';
 import { Navigate } from 'react-router-dom';
 
-//el componente recibe las props
 const Login = ({ isLoggedIn, handleLogin }) => { 
     
-//logica de proteccion: redirige a "/" si ya está logueado
+//redirige a / si ya esta logueado
     if (isLoggedIn) {
         return <Navigate to="/" replace={true} />;
     }
@@ -13,7 +12,7 @@ const Login = ({ isLoggedIn, handleLogin }) => {
 //modificar el submit para cambiar el estado global
     const handleSubmit = (e) => {
         e.preventDefault();
-//simulacion: llama a la función que cambia el estado global
+//llama a la función que cambia el estado global
         handleLogin(); 
     };
 
@@ -25,7 +24,7 @@ const Login = ({ isLoggedIn, handleLogin }) => {
                 <Card.Body>
                   <h2 className="text-center mb-4">Iniciar Sesión</h2>
                   <Form onSubmit={handleSubmit}>
-                    <Form.Group className="mb-3" controlId="formUsername">
+                  <Form.Group className="mb-3" controlId="formUsername">
                       <Form.Label>Usuario</Form.Label>
                       <Form.Control type="text" placeholder="Ingrese su usuario" required />
                     </Form.Group>

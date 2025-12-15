@@ -6,12 +6,12 @@ import ProductCard from './ProductCard';
 const API_URL = 'https://68f2a286b36f9750deed427f.mockapi.io/v1/productos'; 
 
 const Productos = () => {
-    // estado para la lista completa de productos de la API
     const [productos, setProductos] = useState([]); 
-    // estado para la categoria seleccionada (por defecto 'Todo')
+    
     const [filtroActivo, setFiltroActivo] = useState('Todo');
     
     const [loading, setLoading] = useState(true); 
+
     const [error, setError] = useState(null); 
 
     useEffect(() =>{
@@ -37,7 +37,7 @@ const Productos = () => {
         filtroActivo === 'Todo' || producto.categoria === filtroActivo
     );
     
-    // logica de renderizado
+    //logica de renderizado
 
     if (loading) {
         return <Container className="text-center mt-5"><Spinner animation="border" role="status" /><p>Cargando productos...</p></Container>;
@@ -49,7 +49,6 @@ const Productos = () => {
 
     return (
         <Container className="mt-5">
-            <h1 className="text-center mb-4">Catálogo de Productos</h1>
 
             <Nav variant="pills" className="justify-content-center mb-5" defaultActiveKey="Todo">
                 {categorias.map(cat => (
@@ -70,7 +69,7 @@ const Productos = () => {
                 ))}
             </Nav>
 
-            {/* Lista de productos filtrados */}
+            {/*lista de productos filtrados*/}
             <Row xs={1} md={2} lg={3} className="g-4">
                 {productosFiltrados.map(producto => (
                     <Col key={producto.id}>

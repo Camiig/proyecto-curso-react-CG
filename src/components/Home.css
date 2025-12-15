@@ -1,0 +1,27 @@
+/*contenedor principal*/
+.home-hero-section {
+    background-color: #f8f9fa; 
+    padding: 80px 0; 
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+}
+
+/*titulo tematico */
+.home-hero-title {
+    font-family: 'Cinzel', serif; 
+    font-size: 3rem; 
+    font-weight: bold;
+    color: #212529; 
+    margin-bottom: 20px;
+}
+
+.home-hero-image-col {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 400px;
+    border-radius: 4px;
+}

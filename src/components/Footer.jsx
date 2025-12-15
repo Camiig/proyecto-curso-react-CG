@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { faInstagram, faFacebookF, faTiktok } from '@fortawesome/free-brands-svg-icons';
 
-//estilo personalizado para el footer con css
 const footerStyle = {
   backgroundColor: '#8d8d8d',
 }

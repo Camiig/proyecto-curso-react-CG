@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Container, Spinner, Alert, Card, Row, Col, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { useCart } from './CartContext'; 
 
 const API_URL = 'https://68f2a286b36f9750deed427f.mockapi.io/v1/productos';
 
-//formateo de precio
 const formatCurrency = (amount) => {
     return new Intl.NumberFormat('es-AR', {
         style: 'currency',
@@ -16,90 +16,103 @@ const formatCurrency = (amount) => {
 };
 
 const DetalleProducto = () => {
-    //useNavigate para poder volver a la página anterior
     const navigate = useNavigate();
-    //useParams() extrae los parametros de la url. si la ruta es /productos/101, id será "101"
     const { id } = useParams(); 
-    
+
+
+    const { addItem } = useCart(); 
+    const [added, setAdded] = useState(false); 
+
+
     const [producto, setProducto] = useState(null); 
     const [loading, setLoading] = useState(true); 
     const [error, setError] = useState(null); 
 
+//funcion para agregar al carrito
+    const handleOnAdd = () => {
+        //aseguramos que el producto exista antes de agregarlo
+        if (!producto || !producto.id) {
+            console.error("Error al agregar: Producto no definido o sin ID.");
+            return;
+        }
+        
+        // Llama a addItem del CartContext
+        addItem(producto, 1); 
+        
+        // Activa el feedback visual
+        setAdded(true); 
+    };
+
+
+    //efecto para cargar el producto desde la api
     useEffect(() =>{
         const fetchProducto = async () => {
             try {
-                //fetch a la url con el ID específico
-                const response = await fetch(`${API_URL}/${id}`); 
+                const response = await fetch(`${API_URL}/${id}`);
                 
                 if (!response.ok) {
-                    throw new Error(`Error HTTP: ${response.status}`);
-                }
-                const data = await response.json();
-
-                if (!data || Object.keys(data).length === 0) {
-                     //si el producto no viene, lanza un error
-                     throw new Error(`Producto con ID ${id} no encontrado.`);
+                    throw new Error(`Error ${response.status}: Producto no encontrado`);
                 }
                 
+                const data = await response.json();
                 setProducto(data); 
             } catch (e) {
-                //capturamos cualquier error de red o no encontrado
                 setError(e.message); 
             } finally {
                 setLoading(false); 
             }
         };
+        
         fetchProducto();
-    }, [id]); 
+    }, [id]);
 
-    //manejo de estados (carga y error)
 
-    if (loading) {
-        //muestra esto mientras espera la respuesta de la API 
+    //loading y error
+    if (loading){
         return (
-            <Container className="d-flex justify-content-center align-items-center mt-5" style={{ minHeight: '50vh' }}>
-                <Spinner animation="border" role="status" variant="dark" className="me-2" />
-                <h2>Cargando Detalles del Producto...</h2>
+            <Container className="mt-5 text-center">
+                <Spinner animation="border" role="status" className="me-2" />
+                <span>Cargando producto...</span>
             </Container>
         );
     }
 
-    if (error || !producto) {
-        //muestra esto si hay un error o el producto no existe
+    if (error){
         return (
             <Container className="mt-5">
-                <Alert variant="danger" className="text-center">
-                    <Alert.Heading>¡Error al cargar el producto!</Alert.Heading>
-                    <p>
-                        {error ? error : `El producto con ID ${id} no fue encontrado.`}
-                    </p>
-                    {/*Boton de volver*/}
-                    <hr />
-                    <Button variant="outline-dark" onClick={() => navigate('/productos')}>
-                        <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
-                        Volver al Catálogo
-                    </Button>
-                </Alert>
+                <Alert variant="danger">Error al cargar el producto: {error}</Alert>
+                <Button variant="secondary" onClick={() => navigate(-1)} className="mt-3">
+                    <FontAwesomeIcon icon={faArrowLeft} className="me-2" /> Volver
+                </Button>
             </Container>
         );
     }
 
+    if (!producto) {
+        return (
+            <Container className="mt-5">
+                <Alert variant="warning">Producto no encontrado.</Alert>
+                <Button variant="secondary" onClick={() => navigate(-1)} className="mt-3">
+                    <FontAwesomeIcon icon={faArrowLeft} className="me-2" /> Volver
+                </Button>
+            </Container>
+        );
+    }
+    
+    //renderizado final: producto cargado
     return (
-        <Container className="mt-5">
-            {/* Boton para volver al catalogo */}
-            <Button variant="outline-secondary" className="mb-4" onClick={() => navigate(-1)}>
-                <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
-                Volver
+        <Container className="my-5">
+            <Button variant="secondary" onClick={() => navigate(-1)} className="mb-4">
+                <FontAwesomeIcon icon={faArrowLeft} className="me-2" /> Volver a Productos
             </Button>
             
-            <Card className="shadow-lg p-3">
+            <Card className="shadow-lg border-0">
                 <Row className="g-0">
                     <Col md={6}>
-                        {/* muestra la imagen */}
                         <Card.Img 
-                            variant="top" 
                             src={producto.imagenURL} 
-                            style={{ height: 'auto', objectFit: 'contain', maxHeight: '500px' }} 
+                            alt={producto.nombre} 
+                            style={{ width: '100%', maxHeight: '500px', objectFit: 'cover' }} 
                             className="p-3"
                         />
                     </Col>
@@ -109,19 +122,43 @@ const DetalleProducto = () => {
                                 <h1 className="display-4 fw-bold">{producto.nombre}</h1>
                                 <p className="text-muted text-uppercase mb-3">{producto.categoria}</p>
                                 
-                                {/* Muestra la descripcion */}
                                 <p className="lead mt-4">{producto.descripcion || "Descripción del producto."}</p>
                             </div>
                             
                             <div className="mt-5">
-                                {/* Muestra el precio */}
+                                {/*muestra el precio*/}
                                 <h2 className="text-success display-5 fw-bold mb-4">{formatCurrency(producto.precio)}</h2>
-                                <Button 
-                                    variant="dark"
-                                    size="lg"
-                                    className="w-100">
-                                ¡Comprar Ahora!
-                                </Button>
+
+
+                                
+                                {/*logica condicional para el feedback*/}
+                                {
+                                    added ? (
+                                        //muestra mensaje y botones de accion despues de agregar
+                                        <div className="d-grid gap-2">
+                                            <p className='text-success fw-bold'>✅ ¡Producto añadido al carrito!</p>
+                                            <Link to="/carrito" className="d-grid">
+                                                <Button variant="success" size="lg">
+                                                    Finalizar Compra
+                                                </Button>
+                                            </Link>
+                                            <Button variant="outline-secondary" onClick={() => setAdded(false)}>
+                                                Agregar otra unidad
+                                            </Button>
+                                        </div>
+                                    ) : (
+
+                                        <Button 
+                                            variant="dark"
+                                            size="lg"
+                                            className="w-100"
+                                            onClick={handleOnAdd} 
+                                        >
+                                            Agregar al Carrito
+                                        </Button>
+                                    )
+                                }
+                                
                             </div>
                         </Card.Body>
                     </Col>

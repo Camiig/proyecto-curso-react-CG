@@ -1,13 +1,12 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
-import { Navbar, Nav, Container, Button } from 'react-bootstrap'; // <-- AGREGADO 'Button' AQUI
+import {Link, NavLink} from 'react-router-dom';
+import { Navbar, Nav, Container, Button } from 'react-bootstrap'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
 import logoSrc from '../../public/logo-stark-transparente.png';
 
-// estilo personalizado para el header con css
-const headerStyle = {
+const headerStyle ={
     backgroundColor: '#8d8d8d',
     color: '#212529', 
 };
@@ -16,10 +15,9 @@ const Header = ({isLoggedIn, handleLogout}) => {
     return(
         <Navbar style={headerStyle} expand="lg" className="mb-4">
             <Container>
-                {/*lado izquierdo: logo y titulo*/}
+                {/*lado izquierdo logo y titulo*/}
                 <Navbar.Brand as= {Link} to="/" className="d-flex align-items-center">
                 <img 
-                    //uso de la ruta importada del logo
                     src={logoSrc}
                     alt="The North Shop Logo"
                     className="d-inline-block align-top me-3"
@@ -31,7 +29,7 @@ const Header = ({isLoggedIn, handleLogout}) => {
                 </span>
                 </Navbar.Brand>
 
-                {/*Lado derecho: navbar */}
+                {/*Lado derecho navbar*/}
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ms-auto align-items-center">
@@ -41,6 +39,17 @@ const Header = ({isLoggedIn, handleLogout}) => {
                         <Nav.Link as={Link} to="/productos" style={{color: '#212529', fontWeight: '500'}} className="me-4">
                         Productos 
                         </Nav.Link>
+
+                        {isLoggedIn &&(
+                            <Nav.Link 
+                                as={NavLink} 
+                                to="/gestion-productos" 
+                                style={{color: 'darkred', fontWeight: 'bold'}}
+                                className="me-4"
+                            >
+                                Panel de Gestión
+                            </Nav.Link>
+                        )}
                         
                         {isLoggedIn ? (
                             <Button 
@@ -56,7 +65,7 @@ const Header = ({isLoggedIn, handleLogout}) => {
                         </Nav.Link>
                         )}
                         <Link to="/carrito" className="align-middle mt-1" style={{color: '#212529'}}>
-                        <FontAwesomeIcon icon={faShoppingCart} size="sm" />
+                        <FontAwesomeIcon icon={faShoppingCart} size="sm"/>
                         </Link>
                     </Nav>
                 </Navbar.Collapse>
